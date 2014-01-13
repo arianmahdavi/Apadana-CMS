@@ -8,10 +8,10 @@ A Server that supports php 5 (We recommand you to use php 5.3.20 or newer)
 
 Installation
 ---------------------
-1- Create a database
-2- Upload Apadana CMS
-3- Go to your Site and INSTALL!!
-4- ENjoy APAdana!!!!
+1- Create a database <br/>
+2- Upload Apadana CMS<br/>
+3- Go to your Site and INSTALL!!<br/>
+4- ENjoy APAdana!!!!<br/>
 
 Support Site
 --------------------
