@@ -1,22 +1,22 @@
 ApadanaCMS
 -------------
 Apadana CMS is a free CMS that based on php language and it's under GPL V3 LICENCE.
-..............
+
 Server Requirements
 ----------------
 A Server that supports php 5 (We recommand you to use php 5.3.20 or newer)
-...................
+
 Installation
 ---------------------
 1- Create a database
 2- Upload Apadana CMS
 3- Go to your Site and INSTALL!!
 4- ENjoy APAdana!!!!
-......................
+
 Support Site
 --------------------
 the site of the Apadana DEV TEAM is : www.apadanacms.ir
-....................
+
 RELEASE NOTES
 --------------------
 For see the realese notes you can use this site.( GITHUB )
