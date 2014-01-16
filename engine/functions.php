@@ -252,7 +252,13 @@ function is_serialized( $data )
 
 function get_extension($file)
 {
-	return strtolower(substr(strrchr($file, '.'), 1));
+	$url = @parse_url ($file);
+	$type = explode( ".", $url['path'] );
+	$end =end( $type );
+	if($end == $file)
+	  	return false;
+	else
+		return strtolower( $end );
 }
 
 function generate_password($count = 8, $add = '!@#%^&*()_+=-:;?~{}|÷.,')
