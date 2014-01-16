@@ -55,36 +55,76 @@ class template
 		{
 			return FALSE;
 		}
-
+		$extension = get_extension($file);
 		if ($type == 'include')
 		{
 			$file = str_replace('..', null, $file);
-			if (get_extension($file) == 'tpl' && file_exists($this->base_dir.$file) && is_readable($this->base_dir.$file))
+			if ($extension == 'tpl' && file_exists($this->base_dir.$file) && is_readable($this->base_dir.$file))
 			{
 				$template = @file_get_contents($this->base_dir.$file);
 				if ($template != FALSE)
 				{
 					if (strpos($template, '{include file=') !== FALSE)
 					{
-						$template = preg_replace('#\\{include file=[\'"](.+?)[\'"]\\}#ies', '$this->load(\'\\1\', \'include\')', $template);
+						$template = preg_replace_callback('#\\{include file=[\'"](.+?)[\'"]\\}#is',  array('self','load_include_callback'), $template);
 					}
 					return $template;
 				}
 			}
-			elseif (get_extension($file) == 'php')
+			elseif ($extension == 'php')
 			{
-				exit('Hacking attempt!<hr>Include file: <b>'.str_replace(root_dir, null, $this->base_dir).$file.'</b>');
+				$info = @parse_url ($file);
+
+				$file_path = dirname (root_dir.$info['path']);
+				$file_name = pathinfo($info['path']);
+				$file_name = $file_name['basename'];
+				$Access = 0;
+
+				//Check if its not windows(it means it is linux or mac) it must not be writeable by others(For SECURITY).
+				if ( stristr ( php_uname( "s" ) , "windows" ) === false )
+					$Access = @decoct(@fileperms($file_path)) % 1000;
+
+				//it must not include a file on upload or templates(For SECURITY)
+				if ( stristr ( dirname ($info['path']) , "uploads" ) !== false )
+					return "You Cant Include a File From uploads Directory!!";
+
+				if ( stristr ( dirname ($info['path']) , "templates" ) !== false )
+					return "You Cant Include a File From templates Directory!!";
+
+				if ($Access == 777 ) return "For Security its better that the file not be writeable!! Change its PERMISSIONS!!";
+
+				if ( !file_exists($file_path."/".$file_name) ) return "There is not {$info['path']} (Wrong Address)!";
+
+				//Cant Change The System Variables
+				$info['query'] = str_ireplace(array("file_path","file_name", "info","file", "_GET","_FILES","_POST","_COOKIE","_SESSION","_REQUEST","_SERVER") ,"Blocked", $info['query'] );
+
+				if ( isset($info['query']) AND $info['query'] ) {
+					$Variables = array();
+					parse_str( $info['query'], $Variables );
+					extract($Variables, EXTR_SKIP);
+					unset($Variables);
+				}
+				ob_start();
+
+				include $file_path."/".$file_name;
+
+				return ob_get_clean();
 			}
-			return '{include file="'.$file.'}';
+			else
+			{
+				return '{include file="'.$file.'"}';
+			}
 		}
-		
-		$template = @file_get_contents($this->base_dir.$file);
-		if ($template == FALSE)
+		else
 		{
-			exit('Could not find the template file <b>'. str_replace(root_dir, null, $file) .'</b>!');
+			$template = @file_get_contents($this->base_dir.$file);
+			if ($template == FALSE)
+			{
+				exit('Could not find the template file <b>'. str_replace(root_dir, null, $file) .'</b>!');
+			}
+			$this->template = $template;
+			unset($template);
 		}
-		$this->template = $template;
-		unset($template);
 	}
 
 	function get_function($name, $argumant)
@@ -196,42 +236,49 @@ class template
 
 		if ($this->include && strpos($this->template, '{include file=') !== FALSE)
 		{
-			$this->template = preg_replace('#\\{include file=[\'"](.+?)[\'"]\\}#es', '$this->load(\'\\1\', \'include\')', $this->template);
+			$this->template = preg_replace_callback('#\\{include file=[\'"](.+?)[\'"]\\}#s', array('self','load_include_callback'), $this->template);
 		}
 
 		if (strpos($this->template, '{a href=') !== FALSE)
 		{
-			$this->template = preg_replace('#\\{a href=[\'"](.+?)[\'"]\\}#es', 'url(\'\\1\')', $this->template);
+			//THIS LINE CHANGED (IN 1.2)
+			$this->template = preg_replace_callback('#\\{a href=[\'"](.+?)[\'"]\\}#s', create_function('$matches','return url($matches[1]);'), $this->template);
 		}
 
 		if (strpos($this->template, '[not-module=') !== false)
 		{
-			$this->template = preg_replace('#\\[not-module=([a-zA-Z0-9-_]+)\\](.*?)\\[/not-module\\]#es', '$this->check_module(\'\\1\', \'\\2\', false)', $this->template);
+			//THIS LINE CHANGED (IN 1.2)
+			$this->template = preg_replace_callback('#\\[not-module=([a-zA-Z0-9-_]+)\\](.*?)\\[/not-module\\]#s', array('self','not_module_callback'), $this->template);
 		}
 
 		if (strpos($this->template, '[module=') !== false)
 		{
-			$this->template = preg_replace('#\\[module=([a-zA-Z0-9-_]+)\\](.*?)\\[/module\\]#es', '$this->check_module(\'\\1\', \'\\2\')', $this->template);
+			//THIS LINE CHANGED (IN 1.2)
+			$this->template = preg_replace_callback('#\\[module=([a-zA-Z0-9-_]+)\\](.*?)\\[/module\\]#s', array('self','module_callback'), $this->template);
 		}
 
 		if (strpos($this->template, '[not-group=') !== false)
 		{
-			$this->template = preg_replace('#\\[not-group=([0-9,]+)\\](.*?)\\[/not-group\\]#es', '$this->check_group(\'\\1\', \'\\2\', false)', $this->template);
+			//THIS LINE CHANGED (IN 1.2)
+			$this->template = preg_replace_callback('#\\[not-group=([0-9,]+)\\](.*?)\\[/not-group\\]#s',  array('self','not_group_callback'), $this->template);
 		}
 
 		if (strpos($this->template, '[group=') !== false)
 		{
-			$this->template = preg_replace('#\\[group=([0-9,]+)\\](.*?)\\[/group\\]#es', '$this->check_group(\'\\1\', \'\\2\')', $this->template);
+			//THIS LINE CHANGED (IN 1.2)
+			$this->template = preg_replace_callback('#\\[group=([0-9,]+)\\](.*?)\\[/group\\]#s',  array('self','group_callback'), $this->template);
 		}
 
 		if (strpos($this->template, '[not-page=') !== false)
 		{
-			$this->template = preg_replace('#\\[not-page=([a-zA-Z0-9-_,]+)\\](.*?)\\[/not-page\\]#es', '$this->check_page(\'\\1\', \'\\2\', false)', $this->template);
+			//THIS LINE CHANGED (IN 1.2)
+			$this->template = preg_replace_callback('#\\[not-page=([a-zA-Z0-9-_,]+)\\](.*?)\\[/not-page\\]#s', array('self','not_page_callback'), $this->template);
 		}
 
 		if (strpos($this->template, '[page=') !== false)
 		{
-			$this->template = preg_replace('#\\[page=([a-zA-Z0-9-_,]+)\\](.*?)\\[/page\\]#es', '$this->check_page(\'\\1\', \'\\2\')', $this->template);
+			//THIS LINE CHANGED (IN 1.2)
+			$this->template = preg_replace_callback('#\\[page=([a-zA-Z0-9-_,]+)\\](.*?)\\[/page\\]#s', array('self','page_callback'), $this->template);
 		}
 
 		if (strpos($this->template, '[member]') !== false)
@@ -261,7 +308,8 @@ class template
 
 		if ($this->function && strpos($this->template, '{function name=') !== FALSE)
 		{
-			$this->template = preg_replace('#\\{function name=[\'"]([a-zA-Z0-9_]+)[\'"] args=[\'"](.+?)[\'"]\\}#es', '$this->get_function("\\1", "\\2")', $this->template);
+			//THIS LINE CHANGED (IN 1.2)
+			$this->template = preg_replace_callback('#\\{function name=[\'"]([a-zA-Z0-9_]+)[\'"] args=[\'"](.+?)[\'"]\\}#s',array('self','get_function_callback'), $this->template);
 		}
 
 		# for
@@ -412,6 +460,31 @@ class template
 		$this->parsed = null;
 		$this->tags = array();
 		$this->blocks = array();
+	}
+	//THIS FUNCTIONS ADDED (IN 1.2)
+	function get_function_callback($matches){
+		return $this->get_function($matches[1],$matches[2]);
+	}
+	function load_include_callback($matches){
+		return $this->load($matches[1],'include');
+	}
+	function not_module_callback($matches){
+		return $this->check_module($matches[1],$matches[2],flase);
+	}
+	function module_callback($matches){
+		return $this->check_module($matches[1],$matches[2]);
+	}
+	function not_group_callback($matches){
+		return $this->check_group($matches[1],$matches[2],false);
+	}
+	function group_callback($matches){
+		return $this->check_group($matches[1],$matches[2]);
+	}
+	function not_page_callback($matches){
+		return $this->check_page($matches[1],$matches[2],false);
+	}
+	function page_callback($matches){
+		return $this->check_page($matches[1],$matches[2]);
 	}
 }
 
