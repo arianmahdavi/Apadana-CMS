@@ -181,6 +181,7 @@ $ualib_os = array(
 		'use_PCRE' => 0,
 		'pattern' => 'Win',
 		'version' => array(
+			'NT 6.3' => '8.1',
 			'NT 6.2' => '8',
 			'NT 6.1' => '7',
 			'NT 6.0' => 'Vista',
