@@ -66,6 +66,8 @@ function _index()
 		'{smtp-port}' => $options['smtp-port'],
 		'{smtp-username}' => $options['smtp-username'],
 		'{smtp-password}' => htmlspecialchars($options['smtp-password']),
+		'{smiles_number}' => $options['smiles_number'],
+		'{smiles_extension}' => html::select("options[smiles_extension]",array("png" => "png","jpg" => "jpg","gif" => "gif"),$options['smiles_extension'])
 	));
 
 	if ($options['antiflood'] == 1)
@@ -208,7 +210,8 @@ function _save()
 			'admin', 'default-module', 'title', 'slogan', 'mail', 'editor-color', 'feed-limit', 'http-referer', 'replace-link',
 			'rewrite', 'file-rewrite', 'separator-rewrite', 'meta-desc', 'meta-keys', 'comments', 'offline-message', 'offline',
 			'rules', 'url-correction', 'antiflood',
-			'smtp-host', 'smtp-username', 'smtp-password', 'smtp-port'
+			'smtp-host', 'smtp-username', 'smtp-password', 'smtp-port',
+			'smiles_extension','smiles_number'
 		);
 		$msg = array();
 
@@ -245,6 +248,9 @@ function _save()
 		$op['smtp-username'] = isset($op['smtp-username'])? nohtml($op['smtp-username']) : null;
 		$op['smtp-password'] = isset($op['smtp-password'])? trim($op['smtp-password']) : null;
 		$op['smtp-port'] = isset($op['smtp-port'])? intval($op['smtp-port']) : null;
+
+		$op['smiles_number'] = isset($op['smiles_number'])? intval($op['smiles_number']) : 75;
+		$op['smiles_extension'] = ($op['smiles_extension'] == "gif" ? "gif" : ($op['smiles_extension'] == "png" ? "png" : "jpg"));
 
 		if (!is_alphabet($op['admin']) || is_dir(root_dir.'modules/'.$op['admin']))
 		{
@@ -298,6 +304,15 @@ function _save()
 						case 'separator-rewrite':
 						case 'file-rewrite':
 						remove_cache('sitemap');
+						break;
+
+						case 'smiles_number':
+						case 'smiles_extension':
+						case 'editor-color':
+						remove_cache('ckeditor-cache-BBcode');
+						remove_cache('ckeditor-cache-apadana');
+						remove_cache('ckeditor-cache-Basic');
+						remove_cache('ckeditor-cache-');
 						break;
 					}
 				}

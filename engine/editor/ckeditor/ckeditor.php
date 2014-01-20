@@ -15,6 +15,7 @@
  * $CKEditor->editor("editor1", "<p>Initial value.</p>");
  * @endcode
  */
+defined('security') or exit('Direct Access to this location is not allowed.');
 class CKEditor
 {
 	/**

@@ -85,6 +85,12 @@ function closexAjaxDiv()
 	<td><label><input type="checkbox" name="options[replace-link]" value="1"[replace] checked="checked"[/replace]  />&nbsp;کاربران غیر عضو به لینک های موجود در پست ها و سایر محتوا ها دسترسی نداشته باشند.</label></td>
   </tr>
   <tr>
+	<td>تعداد خندانک های ادیتور و فرمت آن ها</td>
+	<td><input name="options[smiles_number]" type="text" value="{smiles_number}" style="width:15px" dir="ltr" /> 
+	{smiles_extension} 
+	<font color="#BBBBBB" size="1">شما می توانید خندانک ها را در پوشه engine/images/smiles تغیر بدهید و مانند نمونه نام گذاری کنید فقط باید تعداد و فرمت آن ها را اینجا وارد کنید!</font></td>
+  </tr>
+  <tr>
 	<td>رنگ ادیتور</td>
 	<td><input name="options[editor-color]" type="text" style="width:45px;text-align:center" value="{editor-color}" class="color" dir="ltr" /></td>
   </tr>
