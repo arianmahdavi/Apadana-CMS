@@ -13,7 +13,7 @@ defined('security') or exit('Direct Access to this location is not allowed.');
 
 function module_contact_us_run()
 {
-	global $page, $d, $options, $member_groups, $member;
+	global $page, $d, $options, $member_groups, $member,$tpl;
 	$member = member::is('info');
 
 	require_once(engine_dir.'mail.function.php');
@@ -186,7 +186,7 @@ function module_contact_us_run()
 	unset($itpl, $members, $m, $a);
 }
 
-function module_contact_us_sitemap(&$sitemap)
+function module_contact_us_sitemap($sitemap)
 {
 	$sitemap->addItem(url('contact-us'), 0, 'never', '0.6');
 }

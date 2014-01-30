@@ -402,6 +402,7 @@ function _remove()
 
 function _menu()
 {
+	global $tpl;
 	$num = private_messages();
 	$file = get_tpl(root_dir.'modules/private-messages/html/||menu.tpl', template_dir.'||private-messages/menu.tpl');
 	$itpl = new template($file[1], $file[0]);

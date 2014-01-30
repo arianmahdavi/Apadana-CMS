@@ -240,7 +240,7 @@ function module_counter_update()
 	unset($ip, $member, $guest, $page, $dirname, $query, $strlen);
 }
 
-function module_counter_sitemap(&$sitemap)
+function module_counter_sitemap($sitemap)
 {
 	$sitemap->addItem(url('counter/browser'), 0, 'daily', '0.1');
 	$sitemap->addItem(url('counter/os'), 0, 'daily', '0.1');

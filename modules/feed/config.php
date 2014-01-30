@@ -37,7 +37,7 @@ function module_feed_run()
 			$feeds->setLink(url);
 			$feeds->setDescription($options['slogan']);
 			$feeds->setID(url('feed/'.$_GET['b'].'/'.$_GET['c']));
-			$feeds->setGeneratorName('Apadana Cms Copyright (c) '.date('Y').' by Iman Moodi (www.apadanacms.ir)');
+			$feeds->setGeneratorName('Apadana Cms v'.version.' (www.apadanacms.ir)');
 
 			$func = 'module_'.str_replace('-', '_', $_GET['b']).'_feed';
 			$func($feeds);

@@ -351,7 +351,7 @@ function module_account_run()
 	}
 }
 
-function module_account_sitemap(&$sitemap)
+function module_account_sitemap($sitemap)
 {
 	$sitemap->addItem(url('account/members'), 0, 'daily', '0.6');
 	$sitemap->addItem(url('account/register'), 0, 'never', '0.6');

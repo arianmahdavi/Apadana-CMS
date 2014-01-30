@@ -48,7 +48,7 @@ function _index()
 
 		$itpl->add_for('modules', array(
 			'{odd-even}' => odd_even(),
-			'{name}' => $dir,
+			'{name}' => $info['name'] . " (".$dir." )",
 
 			'{info-version}' => $info['version'],
 			'{info-creationDate}' => jdate('l j F Y ساعت h:i A', strtotime($info['creationDate'])),

@@ -359,7 +359,7 @@ function _members()
 
 function _profile()
 {
-	global $d, $member_groups;
+	global $d, $member_groups,$tpl;
 	set_title('پروفایل');
 	$username = get_param($_GET, 'c');
 	$member = is_alphabet($username)? member::info(false, $username) : false;
@@ -473,7 +473,7 @@ function _profile()
 
 function _index()
 {
-	global $d, $member_groups, $member;
+	global $d, $member_groups, $member,$tpl;
 
 	if (!member)
 		redirect(url('account/login'));
@@ -1079,7 +1079,7 @@ function _forget()
 
 	require_once(engine_dir.'captcha.function.php');
 
-	global $d, $page, $member;
+	global $d, $page, $member,$tpl;
 	$success = false;
 	$message = null;
 	$options_account = account_options();

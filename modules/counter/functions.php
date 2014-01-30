@@ -647,6 +647,7 @@ function _day()
 
 function _menu()
 {
+	global $tpl;
 	$file = get_tpl(root_dir.'modules/counter/html/||menu.tpl', template_dir.'||counter/menu.tpl');
 	$itpl = new template($file[1], $file[0]);
 	if (!isset($file[2])) set_content('دسترسی سریع', $itpl->get_var()); else $tpl->assign('{content}', $itpl->get_var());

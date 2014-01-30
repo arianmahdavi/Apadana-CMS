@@ -563,11 +563,11 @@ function module_posts_search($search)
 	}
 }
 
-function module_posts_sitemap(&$sitemap)
+function module_posts_sitemap($sitemap)
 {
 	global $d, $options;
 
-	$categories = &posts_categories();
+	$categories = posts_categories();
 
 	if (isset($categories) && is_array($categories) && count($categories))
 	{
@@ -591,7 +591,7 @@ function module_posts_sitemap(&$sitemap)
 	unset($posts, $p, $query);
 }
 
-function module_posts_feed(&$feeds)
+function module_posts_feed($feeds)
 {
 	global $d, $options;
 
