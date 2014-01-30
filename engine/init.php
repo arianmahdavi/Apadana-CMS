@@ -23,14 +23,16 @@ if (extension_loaded('mbstring') && function_exists('mb_internal_encoding'))
     mb_internal_encoding('UTF-8');
 }
 
-if (!file_exists(engine_dir.'config.inc.php') && is_dir(root_dir.'install'))
+if (!file_exists(engine_dir.'config.inc.php'))
 {
-	Header('Location: install/');
-    exit('Link Redirect:<br /><br />Please click <a href="install/">here.</a>');
-}
-elseif (!file_exists(engine_dir.'config.inc.php') && !is_dir(root_dir.'install'))
-{
-    exit('Could not find the "engine/config.inc.php" file!');
+	if(is_dir(root_dir.'install')){
+		Header('Location: install/');
+		exit('Link Redirect:<br /><br />Please click <a href="install/">here.</a>');
+	}
+	else
+	{
+		exit('Could not find the "engine/config.inc.php" file!');
+	}
 }
 elseif (is_dir(root_dir.'install'))
 {
@@ -102,6 +104,19 @@ if (!$options = get_cache('options'))
 	};
 	unset($rows, $row);
 	set_cache('options', $options);
+}
+
+if(isset($_GET['theme'])  )
+{
+	if(template_exists($_GET['theme'])){
+		$options['theme'] = $_GET['theme'];
+		set_cookie('theme',$_GET['theme']);
+	}
+}elseif( isset($_COOKIE['theme']) )
+{
+	if(template_exists($_COOKIE['theme'])){
+		$options['theme'] = $_COOKIE['theme'];
+	}
 }
 
 define('template_dir', root_dir.'templates/'.$options['theme'].'/');
