@@ -3,9 +3,11 @@
 <head profile="http://gmpg.org/xfn/11">
 {head}
 <script type="text/javascript" src="{site-url}engine/javascript/tooltip.js"></script>
+<script type="text/javascript" src="{site-url}engine/javascript/jqueryui.js"></script>
 <script type="text/javascript" src="{site-url}engine/javascript/farsiType.js"></script>
 <script type="text/javascript" src="{site-url}engine/admin/template/javascript/admin.js"></script>
 <link href="{site-url}engine/admin/template/styles/default.css" type="text/css" rel="stylesheet" />
+<link href="{site-url}engine/admin/template/styles/start/jquery-ui-1.10.4.custom.min.css" type="text/css" rel="stylesheet" />
 <link href="{site-url}engine/admin/template/styles/engine.css" type="text/css" rel="stylesheet" />
 </head>
 <body>
@@ -30,7 +32,7 @@
 {content}
 
 <div id="footer">
-<span id="left">Powered by <a href="http://www.apadanacms.ir/?ref=admin" target="_blank" rel="copyright">Apadana Cms</a> copyright &copy; {function name="date" args="Y"} by Iman Moodi.</span>
+<span id="left">Powered by <a href="http://www.apadanacms.ir/?ref=admin" target="_blank" rel="copyright">Apadana Cms</a> copyright &copy; {function name="date" args="Y"}</span>
 <span id="right">تعداد ارتباط با دیتابیس: {num-queries} / حافظه درگیر سیستم: {memory-get-usage} / زمان ایجاد صفحه {creation-time} ثانیه</span>
 <div class="clear"></div>
 </div>
